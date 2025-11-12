@@ -1,0 +1,6 @@
+.DS_Store
+*.pyc
+.venv
+.vscode
+.env
+node_modules
