@@ -1,5 +1,5 @@
-# Langflow 1.6.5 インストール・実行マニュアル
-    このマニュアルでは、Langflow 1.6.5のインストールから実行までの手順を説明します。
+# Langflow 1.6.8 インストール・実行マニュアル
+    このマニュアルでは、Langflow 1.6.8のインストールから実行までの手順を説明します。
 
 ## for IBM Buisiness Partners only
 
@@ -15,8 +15,8 @@
 
   Langflowは、プロトタイピング、実験、学習に最適なツールで、LLMアプリケーション開発を加速します。
 
-### Langflow 1.6.5の主な特徴
-  Langflow 1.6.5では以下のような機能が提供されています：
+### Langflow 1.6.8の主な特徴
+  Langflow 1.6.8では以下のような機能が提供されています：
 
   - **改良されたUI/UX**: より直感的なインターフェースでフローの作成が容易になりました
   - **多様なLLMサポート**: OpenAI、HuggingFace、Mistral、Google Gemini、Anthropic Claude、Groqなど多数のモデルをサポート
@@ -45,20 +45,8 @@
 
 ### 3. Langflowのインストール
   ```bash
-  pip install langflow==1.6.5
+  pip install langflow==1.6.8
   ```
-
-  **注意**: インストールには非常に時間がかかることがあります（30分〜1時間以上）。これは、Langflowが多くの依存関係を持ち、それらを解決するのに時間がかかるためです。実際の検証では、依存関係の解決に30分以上かかり、高いCPU使用率（約98%）が継続的に観測されました。
-
-  インストールの過程で約500以上のパッケージがインストールされることがあります。これは通常のPythonパッケージよりもはるかに多く、そのためインストール時間が長くなります。
-
-  インストール中、特に以下のような依存関係で時間がかかる場合があります：
-
-  - langchain とその関連パッケージ
-  - google-cloud-aiplatform など、大きなライブラリ
-  - 様々なAIモデル連携用のSDK
-
-  インストール中に進行が止まったように見える場合でも、バックグラウンドでは依存関係の解決が行われている可能性があります。辛抱強く待ちましょう。
 
 ### 4. Langflowの実行
   ```bash
@@ -71,7 +59,7 @@
 
   Langflowを起動すると、ウェブブラウザでインターフェースにアクセスできます。以下は基本的な使い方です：
 
-  ![Langflowホーム画面](img/home.png)
+  <img src="img/home.png" alt="Langflowホーム画面" width="80%" />
 
 ### 新しいフローの作成
 
@@ -104,12 +92,12 @@
   - 依存関係の競合がある場合は、新しい仮想環境を作成してやり直す
   - インストールが途中で止まった場合は、`--no-cache-dir`オプションを使用してみる:
     ```bash
-    pip install langflow==1.6.5 --no-cache-dir
+    pip install langflow==1.6.8 --no-cache-dir
     ```
   - 特定の依存関係でエラーが発生する場合は、まず基本的な依存関係をインストールしてから試す:
     ```bash
     pip install langchain langchain-core langchain-community
-    pip install langflow==1.6.5
+    pip install langflow==1.6.8
     ```
 
 ### 実行時の問題
@@ -122,7 +110,7 @@
 
 ## パッチ適用手順
 
-  langflow 1.6.5には既知の問題があり、そのままでは正常に動作しない場合があります。以下のパッチ適用手順に従って修正することができます。
+  langflow 1.6.8には既知の問題があり、そのままでは正常に動作しない場合があります。以下のパッチ適用手順に従って修正することができます。
   * MCPサーバ側がList形式でTools一覧を返す場合 設定できない
   * MCPサーバの設定画面でUpdateボタンでenvの値が消えてしまう。
 
@@ -134,10 +122,10 @@
 
   ```bash
   # utilのバックアップ
-  cp .venv/lib/python3.11/site-packages/langflow/base/mcp/util.py venv/lib/python3.11/site-packages/langflow/base/mcp/util.py.bak
+  cp .venv/lib/python3.11/site-packages/langflow/base/mcp/util.py .venv/lib/python3.11/site-packages/langflow/base/mcp/util.py.bak
 
   # mcpのバックアップ
-  cp .venv/lib/python3.11/site-packages/langflow/api/v2/mcp.py venv/lib/python3.11/site-packages/langflow/api/v2/mcp.py.bak
+  cp .venv/lib/python3.11/site-packages/langflow/api/v2/mcp.py .venv/lib/python3.11/site-packages/langflow/api/v2/mcp.py.bak
   ```
 
 ### 2. パッチファイルの適用
@@ -146,35 +134,35 @@
 
   ```bash
   # util.pyの修正
-  cp patch_for_langflow1.6.5/base/mcp/util.py .venv/lib/python3.11/site-packages/langflow/base/mcp/util.py
+  cp patch_for_langflow1.6.8/base/mcp/util.py .venv/lib/python3.11/site-packages/langflow/base/mcp/util.py
 
   # mcp.pyも修正
-  cp patch_for_langflow1.6.5/api/v2/mcp.py .venv/lib/python3.11/site-packages/langflow/api/v2/mcp.py
+  cp patch_for_langflow1.6.8/api/v2/mcp.py .venv/lib/python3.11/site-packages/langflow/api/v2/mcp.py
   ```
 
 ## MCPサーバー設定とツールの利用
 
   * Langflowでは設定画面からMCPサーバーを追加・管理できます：
-    ![設定画面](img/settings.png)
+    <img src="img/settings.png" alt="設定画面" width="80%" />
 
   * MCPサーバー設定画面では、サーバーの追加・編集・削除が可能です：
-    ![MCPサーバー設定](img/settings_mcpserver.png)
+    <img src="img/settings_mcpserver.png" alt="MCPサーバー設定" width="80%" />
 
   * 設定したMCPサーバーのツールは、フロー編集画面にMCPToolsを置くことで利用できます：
-    ![MCPツールリスト](img/mcptools_list.png)
+    <img src="img/mcptools_list.png" alt="MCPツールリスト" width="80%" />
 
   * 右上の実行ボタンで選んだToolが実行されます。右下の結果ボタンでレスポンスを確認できます。
-    ![MCPツールボタン](img/mcptools_btn.png)
+    <img src="img/mcptools_btn.png" alt="MCPツールボタン" width="80%" />
 
   * ツールを実行すると、結果が表示されます：
-    ![MCPツール実行結果](img/mcptools_result.png)
+    <img src="img/mcptools_result.png" alt="MCPツール実行結果" width="80%" />
 
   * VSCode上にLogが出力されます：
-    ![Log](img/log.png)
+    <img src="img/log.png" alt="Log" width="80%" />
 
 ## データベース修正手順
 
-  Langflow 1.6.5では、データベースの問題を修正するための`migration`コマンドが提供されています。データベース関連のエラーやフローの読み込み問題が発生した場合は、以下のコマンドを実行してみてください：
+  Langflow 1.6.8では、データベースの問題を修正するための`migration`コマンドが提供されています。データベース関連のエラーやフローの読み込み問題が発生した場合は、以下のコマンドを実行してみてください：
 
   ```bash
   # データベースの修正を実行

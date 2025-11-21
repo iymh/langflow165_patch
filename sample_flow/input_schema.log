@@ -1,0 +1,4783 @@
+=== Tool 'kintone-get-app' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "appId": {
+      "type": "string",
+      "description": "The ID of the app to retrieve (numeric value as string)"
+    }
+  },
+  "required": [
+    "appId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-get-form-fields' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to retrieve form fields from (numeric value as string)"
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "ja",
+        "en",
+        "zh",
+        "default",
+        "user"
+      ],
+      "description": "The language for field names"
+    },
+    "preview": {
+      "type": "boolean",
+      "description": "Whether to get form fields from pre-live environment"
+    }
+  },
+  "required": [
+    "app"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-get-form-layout' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to retrieve form layout from (numeric value as string)"
+    },
+    "preview": {
+      "type": "boolean",
+      "description": "Whether to retrieve from preview environment (requires app administration permission for preview, record view/add permission for production)"
+    }
+  },
+  "required": [
+    "app"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-update-form-fields' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to update form fields for (numeric value as string)"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "RECORD_NUMBER"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CREATOR"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CREATED_TIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "MODIFIER"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "UPDATED_TIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CATEGORY"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable/disable setting"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "STATUS"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable/disable setting"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "STATUS_ASSIGNEE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable/disable setting"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "NUMBER",
+                  "SINGLE_LINE_TEXT"
+                ],
+                "description": "Type of lookup field"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "lookup": {
+                "type": "object",
+                "properties": {
+                  "relatedApp": {
+                    "type": "object",
+                    "properties": {
+                      "app": {
+                        "type": "string",
+                        "description": "App ID of the referenced app"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "Field code in the referenced app"
+                      }
+                    },
+                    "required": [
+                      "app",
+                      "code"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Referenced app configuration"
+                  },
+                  "relatedKeyField": {
+                    "type": "string",
+                    "description": "Field code of the key field in the referenced app"
+                  },
+                  "fieldMappings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "description": "Field code in this app"
+                        },
+                        "relatedField": {
+                          "type": "string",
+                          "description": "Field code in the referenced app"
+                        }
+                      },
+                      "required": [
+                        "field",
+                        "relatedField"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "description": "Configuration of field copy source and destination"
+                  },
+                  "lookupPickerFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of field codes to display in the lookup picker of the referenced app"
+                  },
+                  "filterCond": {
+                    "type": "string",
+                    "description": "Query for filtering records in the referenced app"
+                  },
+                  "sort": {
+                    "type": "string",
+                    "description": "Sort condition"
+                  }
+                },
+                "required": [
+                  "relatedApp",
+                  "relatedKeyField",
+                  "fieldMappings",
+                  "lookupPickerFields",
+                  "filterCond",
+                  "sort"
+                ],
+                "additionalProperties": false,
+                "description": "Lookup configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "SINGLE_LINE_TEXT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "minLength": {
+                "type": "string",
+                "description": "Minimum character length"
+              },
+              "maxLength": {
+                "type": "string",
+                "description": "Maximum character length"
+              },
+              "expression": {
+                "type": "string",
+                "description": "Auto-calculation formula"
+              },
+              "hideExpression": {
+                "type": "boolean",
+                "description": "Whether to hide the formula (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "NUMBER"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "minValue": {
+                "type": "string",
+                "description": "Minimum value"
+              },
+              "maxValue": {
+                "type": "string",
+                "description": "Maximum value"
+              },
+              "digit": {
+                "type": "boolean",
+                "description": "Whether to display digit separators (true: show, false: hide)"
+              },
+              "displayScale": {
+                "type": "string",
+                "description": "Number of decimal places to display"
+              },
+              "unit": {
+                "type": "string",
+                "description": "Unit symbol"
+              },
+              "unitPosition": {
+                "type": "string",
+                "enum": [
+                  "BEFORE",
+                  "AFTER"
+                ],
+                "description": "Position of unit (BEFORE: before field, AFTER: after field)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CALC"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "expression": {
+                "type": "string",
+                "description": "Auto-calculation formula"
+              },
+              "hideExpression": {
+                "type": "boolean",
+                "description": "Whether to hide the formula (true: hide, false: show)"
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "NUMBER",
+                  "NUMBER_DIGIT",
+                  "DATETIME",
+                  "DATE",
+                  "TIME",
+                  "HOUR_MINUTE",
+                  "DAY_HOUR_MINUTE"
+                ],
+                "description": "Display format of calculation result"
+              },
+              "displayScale": {
+                "type": "string",
+                "description": "Number of decimal places to display"
+              },
+              "unit": {
+                "type": "string",
+                "description": "Unit symbol"
+              },
+              "unitPosition": {
+                "type": "string",
+                "enum": [
+                  "BEFORE",
+                  "AFTER"
+                ],
+                "description": "Position of unit (BEFORE: before field, AFTER: after field)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "MULTI_LINE_TEXT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "RICH_TEXT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "LINK"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "minLength": {
+                "type": "string",
+                "description": "Minimum character length"
+              },
+              "maxLength": {
+                "type": "string",
+                "description": "Maximum character length"
+              },
+              "protocol": {
+                "type": "string",
+                "enum": [
+                  "WEB",
+                  "CALL",
+                  "MAIL"
+                ],
+                "description": "Link protocol (WEB: http/https, CALL: tel, MAIL: mailto)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CHECK_BOX"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Array of default values"
+              },
+              "options": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Display name of the option"
+                    },
+                    "index": {
+                      "type": "string",
+                      "description": "Display order of the option"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "index"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Options configuration"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "HORIZONTAL",
+                  "VERTICAL"
+                ],
+                "description": "Alignment of options (HORIZONTAL: horizontal, VERTICAL: vertical)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "RADIO_BUTTON"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "options": {
+                "$ref": "#/properties/properties/additionalProperties/anyOf/15/properties/options",
+                "description": "Options configuration"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "HORIZONTAL",
+                  "VERTICAL"
+                ],
+                "description": "Alignment of options (HORIZONTAL: horizontal, VERTICAL: vertical)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "DROP_DOWN"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "options": {
+                "$ref": "#/properties/properties/additionalProperties/anyOf/15/properties/options",
+                "description": "Options configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "MULTI_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Array of default values"
+              },
+              "options": {
+                "$ref": "#/properties/properties/additionalProperties/anyOf/15/properties/options",
+                "description": "Options configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "FILE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "thumbnailSize": {
+                "type": "string",
+                "enum": [
+                  "50",
+                  "150",
+                  "250",
+                  "500"
+                ],
+                "description": "Thumbnail size (pixels)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "DATE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value (YYYY-MM-DD format)"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "defaultNowValue": {
+                "type": "boolean",
+                "description": "Whether to automatically set the current date (true: auto-set, false: manual)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "TIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value (HH:MM format)"
+              },
+              "defaultNowValue": {
+                "type": "boolean",
+                "description": "Whether to automatically set the current time (true: auto-set, false: manual)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "DATETIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value (YYYY-MM-DDTHH:MM:SSZ format)"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "defaultNowValue": {
+                "type": "boolean",
+                "description": "Whether to automatically set the current datetime (true: auto-set, false: manual)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "USER_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Code of user/group/organization"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "USER",
+                            "GROUP",
+                            "ORGANIZATION"
+                          ],
+                          "description": "Type of entity"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "LOGINUSER()",
+                          "description": "Function representing the logged-in user"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "FUNCTION",
+                          "description": "Function type"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "Array of default users/groups/organizations, or LOGINUSER() function"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/properties/additionalProperties/anyOf/23/properties/defaultValue/items/anyOf/0"
+                },
+                "description": "List of selectable users/groups/organizations"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "ORGANIZATION_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Organization code"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "ORGANIZATION",
+                          "description": "Organization type"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "PRIMARY_ORGANIZATION()",
+                          "description": "Function representing the primary organization of the logged-in user"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "FUNCTION",
+                          "description": "Function type"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "Array of default organizations, or PRIMARY_ORGANIZATION() function"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Organization code"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "ORGANIZATION",
+                      "description": "Organization type"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "List of selectable organizations"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "GROUP_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Group code"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "GROUP",
+                      "description": "Group type"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Array of default groups"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Group code"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "GROUP",
+                      "description": "Group type"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "List of selectable groups"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "GROUP"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "openGroup": {
+                "type": "boolean",
+                "description": "Whether to display the group in an open state (true: open, false: closed)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "REFERENCE_TABLE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "referenceTable": {
+                "type": "object",
+                "properties": {
+                  "relatedApp": {
+                    "type": "object",
+                    "properties": {
+                      "app": {
+                        "type": "string",
+                        "description": "App ID of the related app"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "Field code of the related records list field in this app"
+                      }
+                    },
+                    "required": [
+                      "app",
+                      "code"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "condition": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "description": "Field code in this app"
+                      },
+                      "relatedField": {
+                        "type": "string",
+                        "description": "Field code in the related app"
+                      }
+                    },
+                    "required": [
+                      "field",
+                      "relatedField"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Condition for filtering related records"
+                  },
+                  "filterCond": {
+                    "type": "string",
+                    "description": "Query for filtering related records"
+                  },
+                  "displayFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of field codes to display"
+                  },
+                  "sort": {
+                    "type": "string",
+                    "description": "Sort condition"
+                  },
+                  "size": {
+                    "type": "string",
+                    "enum": [
+                      "5",
+                      "10",
+                      "20",
+                      "30",
+                      "40",
+                      "50"
+                    ],
+                    "description": "Number of records to display"
+                  }
+                },
+                "required": [
+                  "relatedApp",
+                  "condition",
+                  "filterCond",
+                  "displayFields",
+                  "sort",
+                  "size"
+                ],
+                "additionalProperties": false,
+                "description": "Related records list configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "SUBTABLE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "fields": {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/8"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/9"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/10"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/11"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/12"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/13"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/14"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/15"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/16"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/17"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/18"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/19"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/20"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/21"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/22"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/23"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/24"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/25"
+                    }
+                  ]
+                },
+                "description": "Configuration of fields within the subtable"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "description": "Object containing field configurations to update"
+    },
+    "revision": {
+      "type": "string",
+      "description": "Expected app configuration revision number. If the specified revision number does not match the current app's revision, an error will occur and the update will not be performed. If not specified or set to '-1', the revision number will not be checked."
+    }
+  },
+  "required": [
+    "app",
+    "properties"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-update-form-layout' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to update form layout for (numeric value as string)"
+    },
+    "layout": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "ROW",
+                "description": "A normal row of fields"
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "SINGLE_LINE_TEXT",
+                          "description": "Text or Look-up field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "MULTI_LINE_TEXT",
+                          "description": "Text Area field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "RICH_TEXT",
+                          "description": "Rich text field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "NUMBER",
+                          "description": "Number or Look-up field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "CALC",
+                          "description": "Calculated field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "RADIO_BUTTON",
+                          "description": "Radio button field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "CHECK_BOX",
+                          "description": "Check box field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "MULTI_SELECT",
+                          "description": "Multi-choice field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "DROP_DOWN",
+                          "description": "Drop-down field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "USER_SELECT",
+                          "description": "User selection field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "ORGANIZATION_SELECT",
+                          "description": "Department selection field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "GROUP_SELECT",
+                          "description": "Group selection field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "DATE",
+                          "description": "Date field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "TIME",
+                          "description": "Time field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "DATETIME",
+                          "description": "Date and time field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "LINK",
+                          "description": "Link field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "FILE",
+                          "description": "Attachment field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "SUBTABLE",
+                          "description": "Table field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "RECORD_NUMBER",
+                          "description": "Record number field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "CREATOR",
+                          "description": "Created by field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "CREATED_TIME",
+                          "description": "Created datetime field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "MODIFIER",
+                          "description": "Updated by field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "UPDATED_TIME",
+                          "description": "Updated datetime field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "STATUS",
+                          "description": "Process management status field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "STATUS_ASSIGNEE",
+                          "description": "Assignee of the Process Management status field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "CATEGORY",
+                          "description": "Category field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "REFERENCE_TABLE",
+                          "description": "Related Records field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "GROUP",
+                          "description": "Field group"
+                        },
+                        {
+                          "type": "string",
+                          "const": "LABEL",
+                          "description": "Label field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "SPACER",
+                          "description": "Blank space field"
+                        },
+                        {
+                          "type": "string",
+                          "const": "HR",
+                          "description": "Border field"
+                        }
+                      ],
+                      "description": "The field type"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Field code (required for most field types except LABEL, SPACER, and HR). Must exactly match the existing field code in the app"
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "Text to set for Label fields (only used with Label field type)"
+                    },
+                    "elementId": {
+                      "type": "string",
+                      "description": "Element ID for Blank space fields (only used with Blank space field type)"
+                    },
+                    "size": {
+                      "type": "object",
+                      "properties": {
+                        "width": {
+                          "type": [
+                            "string",
+                            "number"
+                          ],
+                          "description": "Field width in pixels"
+                        },
+                        "height": {
+                          "type": [
+                            "string",
+                            "number"
+                          ],
+                          "description": "Field height (only applicable for specific fields like Blank space and Text Area)"
+                        },
+                        "innerHeight": {
+                          "type": [
+                            "string",
+                            "number"
+                          ],
+                          "description": "Inner height for multi-line text fields"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "description": "Width and height configurations for fields"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "List of field layouts in the row"
+              }
+            },
+            "required": [
+              "type",
+              "fields"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "SUBTABLE",
+                "description": "A Table"
+              },
+              "code": {
+                "type": "string",
+                "description": "The field code of the SUBTABLE field (not individual fields inside)"
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/layout/items/anyOf/0/properties/fields/items"
+                },
+                "description": "List of field layouts INSIDE the subtable. These should be the field codes that exist within the subtable definition. Use kintone-get-form-fields to see the correct subtable structure. The subtable structure should be: {type: 'SUBTABLE', code: 'table_code', fields: [{type: 'TEXT', code: 'field_inside_table'}, ...]}"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "fields"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "GROUP",
+                "description": "A Group field"
+              },
+              "code": {
+                "type": "string",
+                "description": "The field code of the Group field"
+              },
+              "layout": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/layout/items/anyOf/0"
+                },
+                "description": "List of field layouts inside the Group field"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "layout"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "description": "Array of layout elements (rows, subtables, groups)"
+    },
+    "revision": {
+      "type": "string",
+      "description": "Expected app configuration revision number. If the specified revision number does not match the current app's revision, an error will occur and the update will not be performed. If not specified or set to '-1', the revision number will not be checked."
+    }
+  },
+  "required": [
+    "app",
+    "layout"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-delete-form-fields' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to delete form fields from (numeric value as string)"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "description": "Array of field codes to delete"
+    },
+    "revision": {
+      "type": "string",
+      "description": "Expected app configuration revision number. If the specified revision number does not match the current app's revision, an error will occur and the update will not be performed. If not specified or set to '-1', the revision number will not be checked."
+    }
+  },
+  "required": [
+    "app",
+    "fields"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-get-process-management' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to retrieve process management settings from (numeric value as string)"
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "ja",
+        "en",
+        "zh",
+        "default",
+        "user"
+      ],
+      "description": "The language for field names"
+    },
+    "preview": {
+      "type": "boolean",
+      "description": "Whether to get process management settings from pre-live environment"
+    }
+  },
+  "required": [
+    "app"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-get-app-deploy-status' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "apps": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "number"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 300,
+      "description": "Array of app IDs to check deploy status (maximum 300)"
+    }
+  },
+  "required": [
+    "apps"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-get-general-settings' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to retrieve (numeric value as string)"
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "ja",
+        "en",
+        "zh",
+        "default",
+        "user"
+      ],
+      "description": "The language for retrieving the app name and description"
+    },
+    "preview": {
+      "type": "boolean",
+      "description": "Whether to retrieve from preview environment (requires app administration permission for preview, record view/add permission for production)"
+    }
+  },
+  "required": [
+    "app"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-add-form-fields' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to add fields to (numeric value as string)"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "RECORD_NUMBER"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CREATOR"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CREATED_TIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "MODIFIER"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "UPDATED_TIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CATEGORY"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable/disable setting"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "STATUS"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable/disable setting"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "STATUS_ASSIGNEE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable/disable setting"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "NUMBER",
+                  "SINGLE_LINE_TEXT"
+                ],
+                "description": "Type of lookup field"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "lookup": {
+                "type": "object",
+                "properties": {
+                  "relatedApp": {
+                    "type": "object",
+                    "properties": {
+                      "app": {
+                        "type": "string",
+                        "description": "App ID of the referenced app"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "Field code in the referenced app"
+                      }
+                    },
+                    "required": [
+                      "app",
+                      "code"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Referenced app configuration"
+                  },
+                  "relatedKeyField": {
+                    "type": "string",
+                    "description": "Field code of the key field in the referenced app"
+                  },
+                  "fieldMappings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "description": "Field code in this app"
+                        },
+                        "relatedField": {
+                          "type": "string",
+                          "description": "Field code in the referenced app"
+                        }
+                      },
+                      "required": [
+                        "field",
+                        "relatedField"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "description": "Configuration of field copy source and destination"
+                  },
+                  "lookupPickerFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of field codes to display in the lookup picker of the referenced app"
+                  },
+                  "filterCond": {
+                    "type": "string",
+                    "description": "Query for filtering records in the referenced app"
+                  },
+                  "sort": {
+                    "type": "string",
+                    "description": "Sort condition"
+                  }
+                },
+                "required": [
+                  "relatedApp",
+                  "relatedKeyField",
+                  "fieldMappings",
+                  "lookupPickerFields",
+                  "filterCond",
+                  "sort"
+                ],
+                "additionalProperties": false,
+                "description": "Lookup configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "SINGLE_LINE_TEXT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "minLength": {
+                "type": "string",
+                "description": "Minimum character length"
+              },
+              "maxLength": {
+                "type": "string",
+                "description": "Maximum character length"
+              },
+              "expression": {
+                "type": "string",
+                "description": "Auto-calculation formula"
+              },
+              "hideExpression": {
+                "type": "boolean",
+                "description": "Whether to hide the formula (true: hide, false: show)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "NUMBER"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "minValue": {
+                "type": "string",
+                "description": "Minimum value"
+              },
+              "maxValue": {
+                "type": "string",
+                "description": "Maximum value"
+              },
+              "digit": {
+                "type": "boolean",
+                "description": "Whether to display digit separators (true: show, false: hide)"
+              },
+              "displayScale": {
+                "type": "string",
+                "description": "Number of decimal places to display"
+              },
+              "unit": {
+                "type": "string",
+                "description": "Unit symbol"
+              },
+              "unitPosition": {
+                "type": "string",
+                "enum": [
+                  "BEFORE",
+                  "AFTER"
+                ],
+                "description": "Position of unit (BEFORE: before field, AFTER: after field)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CALC"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "expression": {
+                "type": "string",
+                "description": "Auto-calculation formula"
+              },
+              "hideExpression": {
+                "type": "boolean",
+                "description": "Whether to hide the formula (true: hide, false: show)"
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "NUMBER",
+                  "NUMBER_DIGIT",
+                  "DATETIME",
+                  "DATE",
+                  "TIME",
+                  "HOUR_MINUTE",
+                  "DAY_HOUR_MINUTE"
+                ],
+                "description": "Display format of calculation result"
+              },
+              "displayScale": {
+                "type": "string",
+                "description": "Number of decimal places to display"
+              },
+              "unit": {
+                "type": "string",
+                "description": "Unit symbol"
+              },
+              "unitPosition": {
+                "type": "string",
+                "enum": [
+                  "BEFORE",
+                  "AFTER"
+                ],
+                "description": "Position of unit (BEFORE: before field, AFTER: after field)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "MULTI_LINE_TEXT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "RICH_TEXT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "LINK"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "minLength": {
+                "type": "string",
+                "description": "Minimum character length"
+              },
+              "maxLength": {
+                "type": "string",
+                "description": "Maximum character length"
+              },
+              "protocol": {
+                "type": "string",
+                "enum": [
+                  "WEB",
+                  "CALL",
+                  "MAIL"
+                ],
+                "description": "Link protocol (WEB: http/https, CALL: tel, MAIL: mailto)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "CHECK_BOX"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Array of default values"
+              },
+              "options": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Display name of the option"
+                    },
+                    "index": {
+                      "type": "string",
+                      "description": "Display order of the option"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "index"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Options configuration"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "HORIZONTAL",
+                  "VERTICAL"
+                ],
+                "description": "Alignment of options (HORIZONTAL: horizontal, VERTICAL: vertical)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "RADIO_BUTTON"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "options": {
+                "$ref": "#/properties/properties/additionalProperties/anyOf/15/properties/options",
+                "description": "Options configuration"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "HORIZONTAL",
+                  "VERTICAL"
+                ],
+                "description": "Alignment of options (HORIZONTAL: horizontal, VERTICAL: vertical)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "DROP_DOWN"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value"
+              },
+              "options": {
+                "$ref": "#/properties/properties/additionalProperties/anyOf/15/properties/options",
+                "description": "Options configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "MULTI_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Array of default values"
+              },
+              "options": {
+                "$ref": "#/properties/properties/additionalProperties/anyOf/15/properties/options",
+                "description": "Options configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "FILE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "thumbnailSize": {
+                "type": "string",
+                "enum": [
+                  "50",
+                  "150",
+                  "250",
+                  "500"
+                ],
+                "description": "Thumbnail size (pixels)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "DATE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value (YYYY-MM-DD format)"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "defaultNowValue": {
+                "type": "boolean",
+                "description": "Whether to automatically set the current date (true: auto-set, false: manual)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "TIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value (HH:MM format)"
+              },
+              "defaultNowValue": {
+                "type": "boolean",
+                "description": "Whether to automatically set the current time (true: auto-set, false: manual)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "DATETIME"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "string",
+                "description": "Default value (YYYY-MM-DDTHH:MM:SSZ format)"
+              },
+              "unique": {
+                "type": "boolean",
+                "description": "Whether to prohibit duplicate values (true: prohibit, false: allow)"
+              },
+              "defaultNowValue": {
+                "type": "boolean",
+                "description": "Whether to automatically set the current datetime (true: auto-set, false: manual)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "USER_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Code of user/group/organization"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "USER",
+                            "GROUP",
+                            "ORGANIZATION"
+                          ],
+                          "description": "Type of entity"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "LOGINUSER()",
+                          "description": "Function representing the logged-in user"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "FUNCTION",
+                          "description": "Function type"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "Array of default users/groups/organizations, or LOGINUSER() function"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/properties/additionalProperties/anyOf/23/properties/defaultValue/items/anyOf/0"
+                },
+                "description": "List of selectable users/groups/organizations"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "ORGANIZATION_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Organization code"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "ORGANIZATION",
+                          "description": "Organization type"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "const": "PRIMARY_ORGANIZATION()",
+                          "description": "Function representing the primary organization of the logged-in user"
+                        },
+                        "type": {
+                          "type": "string",
+                          "const": "FUNCTION",
+                          "description": "Function type"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "Array of default organizations, or PRIMARY_ORGANIZATION() function"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Organization code"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "ORGANIZATION",
+                      "description": "Organization type"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "List of selectable organizations"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "GROUP_SELECT"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the field is required (true: required, false: optional)"
+              },
+              "defaultValue": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Group code"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "GROUP",
+                      "description": "Group type"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Array of default groups"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Group code"
+                    },
+                    "type": {
+                      "type": "string",
+                      "const": "GROUP",
+                      "description": "Group type"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "List of selectable groups"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "GROUP"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "openGroup": {
+                "type": "boolean",
+                "description": "Whether to display the group in an open state (true: open, false: closed)"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "REFERENCE_TABLE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "referenceTable": {
+                "type": "object",
+                "properties": {
+                  "relatedApp": {
+                    "type": "object",
+                    "properties": {
+                      "app": {
+                        "type": "string",
+                        "description": "App ID of the related app"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "Field code of the related records list field in this app"
+                      }
+                    },
+                    "required": [
+                      "app",
+                      "code"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "condition": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "description": "Field code in this app"
+                      },
+                      "relatedField": {
+                        "type": "string",
+                        "description": "Field code in the related app"
+                      }
+                    },
+                    "required": [
+                      "field",
+                      "relatedField"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Condition for filtering related records"
+                  },
+                  "filterCond": {
+                    "type": "string",
+                    "description": "Query for filtering related records"
+                  },
+                  "displayFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of field codes to display"
+                  },
+                  "sort": {
+                    "type": "string",
+                    "description": "Sort condition"
+                  },
+                  "size": {
+                    "type": "string",
+                    "enum": [
+                      "5",
+                      "10",
+                      "20",
+                      "30",
+                      "40",
+                      "50"
+                    ],
+                    "description": "Number of records to display"
+                  }
+                },
+                "required": [
+                  "relatedApp",
+                  "condition",
+                  "filterCond",
+                  "displayFields",
+                  "sort",
+                  "size"
+                ],
+                "additionalProperties": false,
+                "description": "Related records list configuration"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "SUBTABLE"
+              },
+              "code": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "label": {
+                "type": "string",
+                "description": "Field label"
+              },
+              "noLabel": {
+                "type": "boolean",
+                "description": "Whether to hide the label (true: hide, false: show)"
+              },
+              "fields": {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/8"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/9"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/10"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/11"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/12"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/13"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/14"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/15"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/16"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/17"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/18"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/19"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/20"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/21"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/22"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/23"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/24"
+                    },
+                    {
+                      "$ref": "#/properties/properties/additionalProperties/anyOf/25"
+                    }
+                  ]
+                },
+                "description": "Configuration of fields within the subtable"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "description": "Object containing field configurations to add"
+    },
+    "revision": {
+      "type": "string",
+      "description": "Expected app configuration revision number. If the specified revision number does not match the current app's revision, an error will occur and the update will not be performed. If not specified or set to '-1', the revision number will not be checked."
+    }
+  },
+  "required": [
+    "app",
+    "properties"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-update-statuses' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app (numeric value as string)"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Record ID (numeric value as string)"
+          },
+          "action": {
+            "type": "string",
+            "description": "Action name to execute. Must be specified in the user's display language if multiple languages are configured. If multiple actions with the same name exist for the current status, an error will occur."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "User login name to assign as the assignee. Required when: 1) The destination status has 'Select assignee from these users' enabled and selectable users exist, 2) Setting an assignee for the initial status when returning to it."
+          },
+          "revision": {
+            "type": "string",
+            "description": "Expected revision number (numeric value as string). If it doesn't match the actual revision, an error occurs and status is not updated. Specify -1 or omit to skip revision validation."
+          }
+        },
+        "required": [
+          "id",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "description": "Array of records to update status (min 1, max 100). Each record contains id, action, and optionally assignee and revision."
+    }
+  },
+  "required": [
+    "app",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-add-records' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to add records to (numeric value as string)"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Text value for string fields (SINGLE_LINE_TEXT, MULTI_LINE_TEXT, RICH_TEXT, LINK)"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Numeric value as string for NUMBER fields (e.g., '123.45'). Only half-width numbers, +/- signs, decimal point (.), and exponential notation (e/E) are allowed. Empty string, null, or undefined for empty values."
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Date/time value for DATE, TIME, DATETIME fields (DATE: 'YYYY-MM-DD', TIME: 'HH:mm', DATETIME: 'YYYY-MM-DDTHH:mm:ssZ')"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Selected option value for RADIO_BUTTON and DROP_DOWN fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "minItems": 0
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Array of selected option values for CHECK_BOX and MULTI_SELECT fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "description": "User code/login name"
+                              }
+                            },
+                            "required": [
+                              "code"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Array of selected users for USER_SELECT fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "description": "Organization code"
+                              }
+                            },
+                            "required": [
+                              "code"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Array of selected organizations for ORGANIZATION_SELECT fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "description": "Group code"
+                              }
+                            },
+                            "required": [
+                              "code"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Array of selected groups for GROUP_SELECT fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "description": "User code/login name"
+                            }
+                          },
+                          "required": [
+                            "code"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "User information for CREATOR and MODIFIER fields (registration format with code only)"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Row ID (optional for new rows)"
+                              },
+                              "value": {
+                                "type": "object",
+                                "additionalProperties": {},
+                                "description": "Field values within this subtable row"
+                              }
+                            },
+                            "required": [
+                              "value"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Array of subtable rows for SUBTABLE fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Lookup field value for LOOKUP fields (string for SINGLE_LINE_TEXT key, numeric string for NUMBER key)"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Date/time value for CREATED_TIME and UPDATED_TIME fields (ISO 8601 format, only for registration)"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "not": {},
+                  "description": "FILE fields are not supported yet (file upload tool not implemented)"
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "description": "Array of records to add (min 1, max 100). Each record is an object with field codes as keys. Use kintone-get-form-fields tool first to discover available field codes and their types."
+    }
+  },
+  "required": [
+    "app",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-delete-records' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app (numeric value as string)"
+    },
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "description": "Array of record IDs to delete (numeric values as strings)"
+    },
+    "revisions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of expected revision numbers for each record (numeric values as strings). If specified, must have the same length as ids array. Deletion will fail if current revisions don't match. Specify -1 or omit to skip revision validation."
+    }
+  },
+  "required": [
+    "app",
+    "ids"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-get-records' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to retrieve records from (numeric value as string)"
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "textContains": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "value": {
+                "type": "string",
+                "description": "Text to search for"
+              }
+            },
+            "required": [
+              "field",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Text fields containing specified values"
+        },
+        "equals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "value": {
+                "type": "string",
+                "description": "Exact value to match"
+              }
+            },
+            "required": [
+              "field",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Fields equal to specified values"
+        },
+        "dateRange": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "from": {
+                "type": "string",
+                "description": "Start date (YYYY-MM-DD)"
+              },
+              "to": {
+                "type": "string",
+                "description": "End date (YYYY-MM-DD)"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Date fields within specified range"
+        },
+        "numberRange": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "min": {
+                "type": "number",
+                "description": "Minimum value"
+              },
+              "max": {
+                "type": "number",
+                "description": "Maximum value"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Number fields within specified range"
+        },
+        "inValues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of values to match"
+              }
+            },
+            "required": [
+              "field",
+              "values"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Fields matching any of the specified values"
+        },
+        "notInValues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Field code"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of values to exclude"
+              }
+            },
+            "required": [
+              "field",
+              "values"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Fields not matching any of the specified values"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Filter conditions for records. Use kintone-get-form-fields tool to discover available field codes and types for an app"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of field codes to retrieve. If not specified, all fields are retrieved. Use kintone-get-form-fields tool to see available fields"
+    },
+    "orderBy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Field code to sort by"
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Sort order (default: asc)"
+          }
+        },
+        "required": [
+          "field"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Sort order for results"
+    },
+    "limit": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 500,
+      "description": "Maximum number of records to retrieve (1-500)"
+    },
+    "offset": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Number of records to skip"
+    }
+  },
+  "required": [
+    "app"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-update-records' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to update records in (numeric value as string)"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Record ID to update (numeric value as string)"
+          },
+          "record": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Text value for string fields (SINGLE_LINE_TEXT, MULTI_LINE_TEXT, RICH_TEXT, LINK)"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Numeric value as string for NUMBER fields (e.g., '123.45'). Only half-width numbers, +/- signs, decimal point (.), and exponential notation (e/E) are allowed. Empty string, null, or undefined for empty values."
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Date/time value for DATE, TIME, DATETIME fields (DATE: 'YYYY-MM-DD', TIME: 'HH:mm', DATETIME: 'YYYY-MM-DDTHH:mm:ssZ')"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Selected option value for RADIO_BUTTON and DROP_DOWN fields"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "minItems": 0
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "Array of selected option values for CHECK_BOX and MULTI_SELECT fields"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "code": {
+                                    "type": "string",
+                                    "description": "User code/login name"
+                                  }
+                                },
+                                "required": [
+                                  "code"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "Array of selected users for USER_SELECT fields"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "code": {
+                                    "type": "string",
+                                    "description": "Organization code"
+                                  }
+                                },
+                                "required": [
+                                  "code"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "Array of selected organizations for ORGANIZATION_SELECT fields"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "code": {
+                                    "type": "string",
+                                    "description": "Group code"
+                                  }
+                                },
+                                "required": [
+                                  "code"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "Array of selected groups for GROUP_SELECT fields"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "code": {
+                                  "type": "string",
+                                  "description": "User code/login name"
+                                }
+                              },
+                              "required": [
+                                "code"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "User information for CREATOR and MODIFIER fields (registration format with code only)"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Row ID (optional for new rows)"
+                                  },
+                                  "value": {
+                                    "type": "object",
+                                    "additionalProperties": {},
+                                    "description": "Field values within this subtable row"
+                                  }
+                                },
+                                "required": [
+                                  "value"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "Array of subtable rows for SUBTABLE fields"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Lookup field value for LOOKUP fields (string for SINGLE_LINE_TEXT key, numeric string for NUMBER key)"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Date/time value for CREATED_TIME and UPDATED_TIME fields (ISO 8601 format, only for registration)"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "fileKey": {
+                                "type": "string",
+                                "description": "File key obtained from file upload API"
+                              }
+                            },
+                            "required": [
+                              "fileKey"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Array of uploaded files for FILE fields"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "description": "Record data with field codes as keys. Use kintone-get-form-fields tool first to discover available field codes and their types."
+          },
+          "revision": {
+            "type": "string",
+            "description": "Expected revision number (numeric value as string). If specified, the update will fail if the current revision doesn't match. Specify -1 or omit to skip revision validation."
+          }
+        },
+        "required": [
+          "id",
+          "record"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "description": "Array of records to update (min 1, max 100). Each record must have an ID to identify which record to update."
+    }
+  },
+  "required": [
+    "app",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-deploy-app' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "apps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "app": {
+            "type": "string",
+            "description": "The ID of the app to deploy (numeric value as string)"
+          },
+          "revision": {
+            "type": "string",
+            "description": "The expected revision number"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 300,
+      "description": "List of apps to deploy (minimum 1, maximum 300 apps)"
+    },
+    "revert": {
+      "type": "boolean",
+      "description": "If true, revert changes instead of deploying (default: false)"
+    }
+  },
+  "required": [
+    "apps"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-update-general-settings' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "string",
+      "description": "The ID of the app to update (numeric value as string)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "The app name (1-64 characters)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 10000,
+      "description": "The app description (up to 10,000 characters)"
+    },
+    "icon": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "PRESET"
+            },
+            "key": {
+              "type": "string",
+              "description": "The icon key for PRESET type"
+            }
+          },
+          "required": [
+            "type",
+            "key"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "FILE"
+            },
+            "file": {
+              "type": "object",
+              "properties": {
+                "fileKey": {
+                  "type": "string",
+                  "description": "The file key for uploaded icon"
+                }
+              },
+              "required": [
+                "fileKey"
+              ],
+              "additionalProperties": false,
+              "description": "The file information for FILE type"
+            }
+          },
+          "required": [
+            "type",
+            "file"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "The app icon configuration"
+    },
+    "theme": {
+      "type": "string",
+      "enum": [
+        "WHITE",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "BLACK"
+      ],
+      "description": "The design theme"
+    },
+    "titleField": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "selectionMode": {
+              "type": "string",
+              "const": "AUTO"
+            }
+          },
+          "required": [
+            "selectionMode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "selectionMode": {
+              "type": "string",
+              "const": "MANUAL"
+            },
+            "code": {
+              "type": "string",
+              "description": "The field code for MANUAL selection mode"
+            }
+          },
+          "required": [
+            "selectionMode",
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "The record title field settings"
+    },
+    "enableThumbnails": {
+      "type": "boolean",
+      "description": "Whether to enable thumbnail display"
+    },
+    "enableComments": {
+      "type": "boolean",
+      "description": "Whether to enable record comments"
+    },
+    "enableBulkDeletion": {
+      "type": "boolean",
+      "description": "Whether to enable bulk deletion of records"
+    },
+    "enableDuplicateRecord": {
+      "type": "boolean",
+      "description": "Whether to enable the reuse record feature"
+    },
+    "enableInlineRecordEditing": {
+      "type": "boolean",
+      "description": "Whether to enable inline editing in record list"
+    },
+    "numberPrecision": {
+      "type": "object",
+      "properties": {
+        "digits": {
+          "type": "string",
+          "description": "Total number of digits (1-30)"
+        },
+        "decimalPlaces": {
+          "type": "string",
+          "description": "Number of decimal places (0-10)"
+        },
+        "roundingMode": {
+          "type": "string",
+          "enum": [
+            "HALF_EVEN",
+            "UP",
+            "DOWN"
+          ],
+          "description": "Rounding method"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The numeric calculation precision settings"
+    },
+    "firstMonthOfFiscalYear": {
+      "type": "string",
+      "description": "The first month of the fiscal year (1-12)"
+    },
+    "revision": {
+      "type": "string",
+      "description": "Expected revision number for optimistic locking"
+    }
+  },
+  "required": [
+    "app"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
+=== Tool 'kintone-download-file' inputSchema ===
+{
+  "type": "object",
+  "properties": {
+    "fileKey": {
+      "type": "string",
+      "description": "The unique file key to download (obtained from record retrieval or file upload)"
+    },
+    "fileName": {
+      "type": "string",
+      "description": "The filename (without extension) to use when downloading to local storage. The extension will be automatically detected and added based on the file's MIME type"
+    }
+  },
+  "required": [
+    "fileKey",
+    "fileName"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+--------------------------------------------------
