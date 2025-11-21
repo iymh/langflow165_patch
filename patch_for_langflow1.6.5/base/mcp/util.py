@@ -7,7 +7,10 @@ import re
 import shutil
 import unicodedata
 from collections.abc import Awaitable, Callable
-from typing import Any
+########## MOD START ##########
+# from typing import Any
+from typing import Any, Dict, Union
+########## MOD END ##########
 from urllib.parse import urlparse
 from uuid import UUID
 
@@ -210,6 +213,105 @@ def sanitize_mcp_name(name: str, max_length: int = 46) -> str:
 
     return name
 
+########## MOD START ##########
+def _fill_defaults(arg_schema: type[BaseModel], provided_args: dict) -> None:
+    """Fill default values for missing fields in the provided arguments."""
+    for field, field_info in arg_schema.model_fields.items():
+        if field not in provided_args:
+            field_type = field_info.annotation
+            field_type_str = str(field_type).lower()
+
+            if "list" in field_type_str or str(field_type) == "list":
+                provided_args[field] = []
+            elif "dict" in field_type_str or str(field_type) == "dict" or "object" in field_type_str:
+                provided_args[field] = {}
+            elif "str" in field_type_str or str(field_type) == "str":
+                provided_args[field] = ""
+            elif "int" in field_type_str or str(field_type) == "int":
+                provided_args[field] = 0
+            elif "float" in field_type_str or str(field_type) == "float":
+                provided_args[field] = 0.0
+            elif "bool" in field_type_str or str(field_type) == "bool":
+                provided_args[field] = False
+            else:
+                provided_args[field] = None
+
+def _post_process_arguments(arg_schema: type[BaseModel], arguments: dict) -> None:
+    """Post-process arguments to handle JSON parsing and type normalization."""
+    import json
+    from typing import get_origin, get_args, Union
+
+    # 1. Normalize types (Union handling and basic string conversion)
+    for field_name, value in arguments.items():
+        field_info = arg_schema.model_fields.get(field_name)
+        if field_info:
+            expected_type = field_info.annotation
+            if get_origin(expected_type) is Union:
+                union_args = get_args(expected_type)
+                if str in union_args and isinstance(value, (int, float, bool)):
+                    arguments[field_name] = str(value)
+                elif int in union_args and isinstance(value, str):
+                    try:
+                        arguments[field_name] = int(value)
+                    except ValueError:
+                        pass
+                elif float in union_args and isinstance(value, str):
+                    try:
+                        arguments[field_name] = float(value)
+                    except ValueError:
+                        pass
+                elif bool in union_args and isinstance(value, str):
+                    arguments[field_name] = value.lower() in ('true', '1', 'yes', 'on')
+            else:
+                if expected_type == str and isinstance(value, (int, float)):
+                    arguments[field_name] = str(value)
+
+    # 2. Handle JSON string inputs
+    for field_name, value in arguments.items():
+        if isinstance(value, str):
+            try:
+                parsed_value = json.loads(value)
+                # logger.debug(f"Parsed {field_name} from JSON string: {parsed_value}")
+
+                # specific array transformation
+                if (isinstance(parsed_value, list) and
+                    len(parsed_value) > 0 and
+                    isinstance(parsed_value[0], dict) and
+                    all(isinstance(v, (str, int, float, bool)) or v is None
+                        for record in parsed_value
+                        for v in record.values())):
+
+                    transformed_records = []
+                    for record in parsed_value:
+                        transformed_record = {}
+                        for k, v in record.items():
+                            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                                v = str(v)
+                            transformed_record[k] = {"value": v}
+                        transformed_records.append(transformed_record)
+                    parsed_value = transformed_records
+                    # logger.debug(f"Transformed array records to API format: {parsed_value}")
+
+                arguments[field_name] = parsed_value
+            except json.JSONDecodeError as jde:
+                # Try ast.literal_eval
+                try:
+                    import ast
+                    parsed_value = ast.literal_eval(value)
+                    if isinstance(parsed_value, (list, dict)):
+                        arguments[field_name] = parsed_value
+                        # logger.debug(f"Parsed {field_name} using ast.literal_eval")
+                        continue
+                except Exception:
+                    pass
+                logger.warning(f"Failed to parse {field_name} as JSON: {jde}, keeping as string")
+
+    # 3. Force string conversion for numbers (final safety net)
+    for arg_name, arg_value in list(arguments.items()):
+        if isinstance(arg_value, (int, float)) and not isinstance(arg_value, bool):
+            arguments[arg_name] = str(arg_value)
+            # logger.debug(f"Force converting {arg_name} = {arg_value} ({type(arg_value).__name__}) to string")
+########## MOD END ##########
 
 def create_tool_coroutine(tool_name: str, arg_schema: type[BaseModel], client) -> Callable[..., Awaitable]:
     async def tool_coroutine(*args, **kwargs):
@@ -226,13 +328,26 @@ def create_tool_coroutine(tool_name: str, arg_schema: type[BaseModel], client) -
         provided_args.update(kwargs)
         # Validate input and fill defaults for missing optional fields
         try:
+########## MOD START ##########
+            _fill_defaults(arg_schema, provided_args)
+            # await logger.adebug(f"Tool '{tool_name}' input args: {provided_args}")
+########## MOD END ##########
+
             validated = arg_schema.model_validate(provided_args)
         except Exception as e:
             msg = f"Invalid input: {e}"
             raise ValueError(msg) from e
 
         try:
-            return await client.run_tool(tool_name, arguments=validated.model_dump())
+########## MOD START ##########
+            arguments = validated.model_dump()
+            # await logger.adebug(f"Original arguments for {tool_name}: {arguments}")
+            
+            _post_process_arguments(arg_schema, arguments)
+            
+            # await logger.adebug(f"Final arguments for {tool_name}: {arguments}")
+            return await client.run_tool(tool_name, arguments=arguments)
+########## MOD END ##########
         except Exception as e:
             await logger.aerror(f"Tool '{tool_name}' execution failed: {e}")
             # Re-raise with more context
@@ -253,14 +368,27 @@ def create_tool_func(tool_name: str, arg_schema: type[BaseModel], client) -> Cal
             provided_args[field_names[i]] = arg
         provided_args.update(kwargs)
         try:
+########## MOD START ##########
+            _fill_defaults(arg_schema, provided_args)
+            # logger.debug(f"Tool '{tool_name}' input args: {provided_args}")
+########## MOD END ##########
             validated = arg_schema.model_validate(provided_args)
         except Exception as e:
+########## MOD START ##########
+            logger.error(f"Tool validation error: {e}, provided: {provided_args}")
+########## MOD END ##########
             msg = f"Invalid input: {e}"
             raise ValueError(msg) from e
 
         try:
+########## MOD START ##########
+            arguments = validated.model_dump()
+            
+            _post_process_arguments(arg_schema, arguments)
+            
             loop = asyncio.get_event_loop()
-            return loop.run_until_complete(client.run_tool(tool_name, arguments=validated.model_dump()))
+            return loop.run_until_complete(client.run_tool(tool_name, arguments=arguments))
+########## MOD END ##########
         except Exception as e:
             logger.error(f"Tool '{tool_name}' execution failed: {e}")
             # Re-raise with more context
@@ -324,11 +452,71 @@ def create_input_schema_from_json_schema(schema: dict[str, Any]) -> type[BaseMod
                 return {"type": "string"}
         return s
 
+########## MOD START ##########
+    def is_complex_schema(schema: dict[str, Any]) -> bool:
+        """Check if a schema is too complex for UI rendering."""
+        # Check for additionalProperties with complex anyOf structures
+        if "additionalProperties" in schema:
+            additional_props = schema["additionalProperties"]
+            if isinstance(additional_props, dict) and "anyOf" in additional_props:
+                anyof_items = additional_props["anyOf"]
+                # If anyOf has many items or contains complex objects
+                if len(anyof_items) > 2:
+                    return True
+                for item in anyof_items:
+                    if isinstance(item, dict) and item.get("type") == "object":
+                        if "properties" in item and len(item["properties"]) > 3:
+                            return True
+                        if "additionalProperties" in item:
+                            return True
+            elif isinstance(additional_props, dict) and additional_props.get("type") == "object":
+                return True
+
+        # Check for complex object with many properties
+        if schema.get("type") == "object" and "properties" in schema:
+            properties_count = len(schema["properties"])
+            if properties_count > 5:  # Threshold for complexity
+                return True
+
+        return False
+
+    def get_fallback_type_for_complex_schema(schema: dict[str, Any]) -> Any:
+        """Get an appropriate fallback type for complex schemas."""
+        if schema.get("type") == "object":
+            # For complex objects, use dict[str, Any] instead of str
+            return dict[str, Any]
+        elif schema.get("type") == "array":
+            # For complex arrays, use list[dict[str, Any]]
+            return list[dict[str, Any]]
+        else:
+            # Default fallback
+            return str
+########## MOD END ##########
+
     def parse_type(s: dict[str, Any] | None) -> Any:
         """Map a JSON Schema subschema to a Python type (possibly nested)."""
         if s is None:
             return None
         s = resolve_ref(s)
+########## MOD START ##########
+        # Handle boolean values in additionalProperties
+        if "additionalProperties" in s and isinstance(s["additionalProperties"], bool):
+            if s["additionalProperties"]:
+                return dict[str, Any]
+            # If false, it means no additional properties are allowed.
+            # We can represent this by returning a type that won't be iterable.
+            # However, for the purpose of building a model, we can perhaps return an empty dict
+            # or handle it in the _build_model function.
+            # For now, let's see if just handling `True` is enough.
+
+        # Handle objects with additionalProperties (dynamic fields) but no explicit properties
+        # This is common for dictionaries/maps where keys are dynamic
+        if s.get("type") == "object" and "additionalProperties" in s and not s.get("properties"):
+            # For dynamic dictionaries, returning Dict[str, Any] allows Langflow UI to potentially
+            # render a JSON editor or Key-Value input.
+            # Complex recursive types (like Unions) inside a Dict often cause UI rendering issues.
+            return dict[str, Any]
+########## MOD END ##########
 
         if "anyOf" in s:
             # Handle common pattern for nullable types (anyOf with string and null)
@@ -350,20 +538,95 @@ def create_input_schema_from_json_schema(schema: dict[str, Any]) -> type[BaseMod
                     }.get(non_null_type, Any)
                 return Any
 
-            # For other anyOf cases, use the first non-null type
-            subtypes = [parse_type(sub) for sub in s["anyOf"]]
-            non_null_types = [t for t in subtypes if t is not None and t is not type(None)]
-            if non_null_types:
-                return non_null_types[0]
-            return str
+########## MOD START ##########
+            ## For other anyOf cases, use the first non-null type
+            # subtypes = [parse_type(sub) for sub in s["anyOf"]]
+            # non_null_types = [t for t in subtypes if t is not None and t is not type(None)]
+            # if non_null_types:
+            #     return non_null_types[0]
+            # return str
+
+            # For other anyOf cases, return a Union of all possible types
+            # This ensures Pydantic generates a schema with oneOf/anyOf, allowing the UI to render appropriate inputs
+            try:
+                subtypes = []
+                for sub in s["anyOf"]:
+                    parsed = parse_type(sub)
+                    if parsed is not None and parsed is not type(None):
+                        subtypes.append(parsed)
+                
+                # Remove duplicates while preserving order
+                unique_types = []
+                seen_types = set()
+                for t in subtypes:
+                    if t not in seen_types:
+                        unique_types.append(t)
+                        seen_types.add(t)
+
+                if not unique_types:
+                    return Any
+                
+                if len(unique_types) == 1:
+                    return unique_types[0]
+                
+                # Safe Union creation for dynamic types
+                # Using __getitem__ with a tuple is the standard way to create Union[A, B] dynamically
+                # But we wrap in try-except to fallback to Any if type construction fails
+                return Union[tuple(unique_types)]
+            except Exception as e:
+                logger.warning(f"Failed to create Union type from anyOf: {e}")
+                return Any
+########## MOD END ##########
 
         t = s.get("type", "any")  # Use string "any" as default instead of Any type
         if t == "array":
             item_schema = s.get("items", {})
-            schema_type: Any = parse_type(item_schema)
-            return list[schema_type]
+########## MOD START ##########
+            # schema_type: Any = parse_type(item_schema)
+            # return list[schema_type]
+            if item_schema:
+                # Check for complex structures that UI cannot handle properly
+                is_complex = False
+
+                # Check if items schema has additionalProperties with anyOf (very complex)
+                if "additionalProperties" in item_schema:
+                    additional_props = item_schema["additionalProperties"]
+                    if isinstance(additional_props, dict) and "anyOf" in additional_props:
+                        anyof_items = additional_props.get("anyOf", [])
+                        # If anyOf has more than 2 items or contains complex nested structures
+                        if len(anyof_items) > 2:
+                            is_complex = True
+                        else:
+                            # Check if anyOf items are complex objects themselves
+                            for item in anyof_items:
+                                if isinstance(item, dict) and item.get("type") == "object":
+                                    is_complex = True
+                                    break
+                    elif item_schema.get("type") == "object" and "properties" in item_schema:
+                        # Complex object with many properties
+                        properties_count = len(item_schema.get("properties", {}))
+                        if properties_count > 5:  # Threshold for complexity
+                            is_complex = True
+
+                # For complex array items, fall back to list[dict[str, Any]] instead of str
+                # This ensures the field appears as an array input in the UI
+                if is_complex:
+                    logger.debug(f"Detected complex array schema, using list[dict[str, Any]] for UI compatibility")
+                    return str  # Keep as str to force JSON input in UI
+
+                schema_type: Any = parse_type(item_schema)
+                return list[schema_type]
+
+            return list[Any]
+########## MOD END ##########
 
         if t == "object":
+########## MOD START ##########
+            # Check if object schema is too complex for UI rendering
+            if is_complex_schema(s):
+                logger.debug(f"Detected complex object schema, falling back to str (JSON input) for UI compatibility")
+                return str
+########## MOD END ##########
             # inline object not in $defs ⇒ anonymous nested model
             return _build_model(f"AnonModel{len(model_cache)}", s)
 
@@ -411,6 +674,29 @@ def create_input_schema_from_json_schema(schema: dict[str, Any]) -> type[BaseMod
 
             fields[prop_name] = (py_type, Field(default, description=prop_schema.get("description")))
 
+########## MOD START ##########
+        # Handle additionalProperties for objects without explicit properties
+        if "additionalProperties" in subschema:
+            additional_props = subschema["additionalProperties"]
+            if isinstance(additional_props, bool):
+                if additional_props:
+                    # Allow any additional properties - but this is complex for UI
+                    # Fall back to str (JSON input) instead
+                    logger.debug(f"Object '{name}' allows additional properties, using str (JSON input) for UI compatibility")
+                    # Don't create fields, just return str type from parse_type
+                    pass
+            elif isinstance(additional_props, dict) and not props:
+                # Handle dict-based additionalProperties
+                additional_props_schema = resolve_ref(additional_props)
+                if is_complex_schema(additional_props_schema) or "anyOf" in additional_props_schema:
+                    # Complex additional properties - use str (JSON input)
+                    logger.debug(f"Object '{name}' has complex additional properties, using str (JSON input) for UI compatibility")
+                    pass  # Will be handled by falling back to str in caller
+                else:
+                    py_type = parse_type(additional_props_schema) or Any
+                    fields["data"] = (Dict[str, py_type], Field(default_factory=dict, description="Dynamic field data"))
+########## MOD END ##########
+
         model_cls = create_model(name, **fields)
         model_cache[name] = model_cls
         return model_cls
@@ -428,9 +714,14 @@ def create_input_schema_from_json_schema(schema: dict[str, Any]) -> type[BaseMod
         else:
             default = ...
         top_fields[fname] = (py_type, Field(default, description=fdef.get("description")))
+########## MOD START ##########
+    # return create_model("InputSchema", **top_fields)
 
-    return create_model("InputSchema", **top_fields)
-
+    final_model = create_model("InputSchema", **top_fields)
+    # Patch deprecated schema method for Pydantic v2 compatibility
+    final_model.schema = final_model.model_json_schema
+    return final_model
+########## MOD END ##########
 
 def _is_valid_key_value_item(item: Any) -> bool:
     """Check if an item is a valid key-value dictionary."""
@@ -570,7 +861,7 @@ class MCPSessionManager:
                     args = connection_params.get("args", [])
                     env = connection_params.get("env", {})
                     
-                    # リスト型のargsを常に文字列に変換して安全に処理
+                    # Safely convert list-type args to string
                     if isinstance(args, list):
                         args_str = " ".join(str(arg) for arg in args)
                         command_str = f"{command} {args_str}"
@@ -593,10 +884,10 @@ class MCPSessionManager:
                     command_str = str(connection_params)
                     env = {}
 
-                # 環境変数を安全に処理
+                # Safely handle environment variables
                 try:
                     if isinstance(env, dict):
-                        # dictのキーと値も文字列に変換してからソート（より安全に）
+                        # Convert dict keys and values to strings before sorting (safer)
                         env_items = sorted((str(k), str(v)) for k, v in env.items())
                         env_str = str(env_items)
                     else:
@@ -609,8 +900,8 @@ class MCPSessionManager:
                 return f"stdio_{hash(key_input)}"
 ########## MOD START ##########
             except Exception:
-                # すべての例外をキャッチして、フォールバックのキーを生成
-                # オブジェクトのIDを使用して一意のキーを生成
+                # Catch all exceptions and generate a fallback key
+                # Generate a unique key using the object ID
                 fallback_key = f"stdio_{hash(str(id(connection_params)))}"
                 return fallback_key
 ########## MOD END ##########
@@ -618,8 +909,35 @@ class MCPSessionManager:
             # Include URL and headers for uniqueness
             url = connection_params["url"]
 ########## MOD START ##########
-            # headers = str(sorted((connection_params.get("headers", {})).items()))
+            headers = connection_params.get("headers", {})
+
+            # Handle case where headers might be a list instead of dict
+            if isinstance(headers, list):
+                # Convert list headers to dict if possible, otherwise convert to string
+                try:
+                    headers_dict = {}
+                    for item in headers:
+                        if isinstance(item, dict) and "key" in item and "value" in item:
+                            headers_dict[item["key"]] = item["value"]
+                        elif isinstance(item, str) and ":" in item:
+                            # Parse "Key: Value" format
+                            key, value = item.split(":", 1)
+                            headers_dict[key.strip()] = value.strip()
+                        else:
+                            # Fallback: convert the entire list to string
+                            headers_str = str(headers)
+                            break
+                    else:
+                        headers_str = str(sorted(headers_dict.items()))
+                except (ValueError, AttributeError):
+                    headers_str = str(headers)
+            elif isinstance(headers, dict):
+                headers_str = str(sorted(headers.items()))
+            else:
+                headers_str = str(headers)
+
             # key_input = f"{url}|{headers}"
+            key_input = f"{url}|{headers_str}"
             headers = connection_params.get("headers", {})
 
             # Handle case where headers might be a list instead of dict
@@ -711,30 +1029,30 @@ class MCPSessionManager:
             server_key = self._get_server_key(connection_params, transport_type)
 ########## MOD START ##########
         except TypeError:
-            # パラメータを安全な形式に変換して再試行
+            # Convert parameters to a safe format and retry
             try:
                 if transport_type == "stdio":
                     if isinstance(connection_params, dict) and "args" in connection_params:
                         args = connection_params["args"]
                         if isinstance(args, list):
-                            # リストをタプルに変換
+                            # Convert list to tuple
                             connection_params = dict(connection_params)
                             connection_params["args"] = tuple(str(arg) for arg in args)
                     elif hasattr(connection_params, "args"):
-                        # StdioServerParametersのようなオブジェクトを処理
+                        # Handle objects like StdioServerParameters
                         args = getattr(connection_params, "args", [])
                         if isinstance(args, list):
-                            # オブジェクトの属性を更新できない場合は辞書に変換
+                            # Convert to dict if object attributes cannot be updated
                             connection_params_dict = {
                                 "command": getattr(connection_params, "command", ""),
                                 "args": tuple(str(arg) for arg in args),
                                 "env": getattr(connection_params, "env", {})
                             }
                             connection_params = connection_params_dict
-                # 再試行
+                # Retry
                 server_key = self._get_server_key(connection_params, transport_type)
             except Exception:
-                # 最終的な回避策として、一意の文字列からハッシュを生成
+                # Final fallback: generate hash from unique string
                 fallback_str = f"{transport_type}_{context_id}_{id(connection_params)}"
                 server_key = f"{transport_type}_{hash(fallback_str)}"
 ########## MOD END ##########
@@ -1087,9 +1405,9 @@ class MCPStdioClient:
         self._connection_params = server_params
 
 ########## MOD START ##########
-        # StdioServerParametersのハッシュ問題を回避
+        # Avoid StdioServerParameters hashing issues
         try:
-            # クラスメソッドを安全にパッチ
+            # Safely patch class method
             if not hasattr(StdioServerParameters, '_patched_hash'):
                 original_hash = StdioServerParameters.__hash__
 
@@ -1098,17 +1416,17 @@ class MCPStdioClient:
                         return original_hash(self)
                     except TypeError as e:
                         if "unhashable type" in str(e):
-                            # リスト要素を文字列に変換してタプル化
+                            # Convert list elements to strings and tuple-ize
                             args = getattr(self, 'args', [])
                             env = getattr(self, 'env', {})
 
-                            # argsがリストの場合のみ変換
+                            # Convert only if args is a list
                             if isinstance(args, list):
                                 hashable_args = tuple(str(arg) for arg in args)
                             else:
                                 hashable_args = str(args)
 
-                            # envが辞書の場合のみ変換
+                            # Convert only if env is a dict
                             if isinstance(env, dict):
                                 hashable_env = tuple(sorted((str(k), str(v)) for k, v in env.items()))
                             else:
@@ -1118,7 +1436,7 @@ class MCPStdioClient:
                             return hash((command, hashable_args, hashable_env))
                         raise
 
-                # クラスメソッドを置き換え
+                # Replace class method
                 StdioServerParameters.__hash__ = safe_hash
                 StdioServerParameters._patched_hash = True
                 await logger.adebug("Successfully patched StdioServerParameters.__hash__ to handle unhashable lists")
@@ -1130,9 +1448,9 @@ class MCPStdioClient:
             await logger.adebug(f"StdioServerParameters is hashable after patch: {hash_value}")
         except Exception as hash_e:
             await logger.adebug(f"StdioServerParameters is still NOT hashable: {hash_e}")
-            # パッチが失敗した場合、個別に処理
+            # Handle individually if patch fails
             try:
-                # 直接ハッシュを計算
+                # Calculate hash directly
                 args = getattr(server_params, 'args', [])
                 env = getattr(server_params, 'env', {})
                 command = getattr(server_params, 'command', '')
@@ -1150,7 +1468,7 @@ class MCPStdioClient:
                 fallback_hash = hash((command, hashable_args, hashable_env))
                 await logger.adebug(f"Calculated fallback hash: {fallback_hash}")
 
-                # オブジェクトに直接ハッシュをセット
+                # Set hash directly on the object
                 server_params._hash_value = fallback_hash
                 server_params.__hash__ = lambda self: self._hash_value
                 await logger.adebug("Applied fallback hash method to server_params")
@@ -1174,20 +1492,7 @@ class MCPStdioClient:
         self._connected = True
         await logger.adebug(f"MCPStdioClient._connect_to_server - connected successfully with {len(response.tools)} tools")
         return response.tools
-
-        # If no session context is set, create a default one
-        if not self._session_context:
-            # Generate a fallback context based on connection parameters
-            import uuid
-
-            param_hash = uuid.uuid4().hex[:8]
-            self._session_context = f"default_{param_hash}"
 ########## MOD END ##########
-
-        session = await self._get_or_create_session()
-        response = await session.list_tools()
-        self._connected = True
-        return response.tools
 
     async def connect_to_server(self, command_str: str, env: dict[str, str] | None = None) -> list[StructuredTool]:
         """Connect to MCP server using stdio transport (SDK style)."""
@@ -1702,12 +2007,12 @@ async def update_tools(
         env = server_config.get("env", {})
 ########## MOD START ##########
         # full_command = " ".join([command, *args])
-        # 変更点: リスト型のargsを安全に処理
+        # Change: Safely handle list-type args
         if isinstance(args, list):
             args_str = [str(arg) for arg in args]
             full_command = " ".join([command] + args_str)
         else:
-            # argsがリストでない場合の対応
+            # Handle case where args is not a list
             full_command = f"{command} {args}"
 ########## MOD END ##########
         tools = await mcp_stdio_client.connect_to_server(full_command, env)
@@ -1757,19 +2062,19 @@ async def update_tools(
 
 ########## MOD START ##########
             except TypeError as e:
-                # unhashable type エラーの特別処理
+                # Special handling for unhashable type errors
                 if "unhashable type: 'list'" in str(e):
                     logger.warning(f"Unhashable type error when creating tool '{tool.name}' from server '{server_name}': {e}")
-                    # スキップして続行
+                    # Skip and continue
                     continue
                 else:
                     raise
     except Exception as e:
         logger.error(f"Error updating tool list for server '{server_name}': {e}")
-        # リスト型関連のエラーの場合、部分的に成功したツールのみを返す
+        # Return partially successful tools in case of list-type errors
         if "unhashable type: 'list'" in str(e):
             logger.warning(f"Returning partial tool list due to unhashable type error for server '{server_name}'")
-            if tool_list:  # 少なくとも1つのツールが作成できた場合
+            if tool_list:  # If at least one tool was created
                 logger.info(f"Successfully loaded {len(tool_list)} tools from MCP server '{server_name}' (partial)")
                 return mode, tool_list, tool_cache
         raise
