@@ -306,6 +306,16 @@ def _post_process_arguments(arg_schema: type[BaseModel], arguments: dict) -> Non
                     pass
                 logger.warning(f"Failed to parse {field_name} as JSON: {jde}, keeping as string")
 
+                # If the field is expected to be a list or dict but parsing failed, raise an error
+                # to prevent "Expected array, received string" errors downstream.
+                field_info = arg_schema.model_fields.get(field_name)
+                if field_info:
+                    expected_type = field_info.annotation
+                    expected_type_str = str(expected_type).lower()
+                    if "list" in expected_type_str or "dict" in expected_type_str:
+                         msg = f"Invalid JSON format for argument '{field_name}'. Please check for missing brackets or quotes. Error: {jde}"
+                         raise ValueError(msg)
+
     # 3. Force string conversion for numbers (final safety net)
     for arg_name, arg_value in list(arguments.items()):
         if isinstance(arg_value, (int, float)) and not isinstance(arg_value, bool):
@@ -479,18 +489,6 @@ def create_input_schema_from_json_schema(schema: dict[str, Any]) -> type[BaseMod
                 return True
 
         return False
-
-    def get_fallback_type_for_complex_schema(schema: dict[str, Any]) -> Any:
-        """Get an appropriate fallback type for complex schemas."""
-        if schema.get("type") == "object":
-            # For complex objects, use dict[str, Any] instead of str
-            return dict[str, Any]
-        elif schema.get("type") == "array":
-            # For complex arrays, use list[dict[str, Any]]
-            return list[dict[str, Any]]
-        else:
-            # Default fallback
-            return str
 ########## MOD END ##########
 
     def parse_type(s: dict[str, Any] | None) -> Any:
@@ -615,9 +613,8 @@ def create_input_schema_from_json_schema(schema: dict[str, Any]) -> type[BaseMod
                     return str  # Keep as str to force JSON input in UI
 
                 schema_type: Any = parse_type(item_schema)
-                return list[schema_type]
-
-            return list[Any]
+                return list[schema_type] 
+            # return list[Any]
 ########## MOD END ##########
 
         if t == "object":
@@ -909,65 +906,9 @@ class MCPSessionManager:
             # Include URL and headers for uniqueness
             url = connection_params["url"]
 ########## MOD START ##########
-            headers = connection_params.get("headers", {})
-
-            # Handle case where headers might be a list instead of dict
-            if isinstance(headers, list):
-                # Convert list headers to dict if possible, otherwise convert to string
-                try:
-                    headers_dict = {}
-                    for item in headers:
-                        if isinstance(item, dict) and "key" in item and "value" in item:
-                            headers_dict[item["key"]] = item["value"]
-                        elif isinstance(item, str) and ":" in item:
-                            # Parse "Key: Value" format
-                            key, value = item.split(":", 1)
-                            headers_dict[key.strip()] = value.strip()
-                        else:
-                            # Fallback: convert the entire list to string
-                            headers_str = str(headers)
-                            break
-                    else:
-                        headers_str = str(sorted(headers_dict.items()))
-                except (ValueError, AttributeError):
-                    headers_str = str(headers)
-            elif isinstance(headers, dict):
-                headers_str = str(sorted(headers.items()))
-            else:
-                headers_str = str(headers)
-
-            # key_input = f"{url}|{headers}"
-            key_input = f"{url}|{headers_str}"
-            headers = connection_params.get("headers", {})
-
-            # Handle case where headers might be a list instead of dict
-            if isinstance(headers, list):
-                # Convert list headers to dict if possible, otherwise convert to string
-                try:
-                    headers_dict = {}
-                    for item in headers:
-                        if isinstance(item, dict) and "key" in item and "value" in item:
-                            headers_dict[item["key"]] = item["value"]
-                        elif isinstance(item, str) and ":" in item:
-                            # Parse "Key: Value" format
-                            key, value = item.split(":", 1)
-                            headers_dict[key.strip()] = value.strip()
-                        else:
-                            # Fallback: convert the entire list to string
-                            headers_str = str(headers)
-                            break
-                    else:
-                        headers_str = str(sorted(headers_dict.items()))
-                except (ValueError, AttributeError):
-                    headers_str = str(headers)
-            elif isinstance(headers, dict):
-                headers_str = str(sorted(headers.items()))
-            else:
-                headers_str = str(headers)
-
-            key_input = f"{url}|{headers_str}"
-########## MOD END ##########
-            return f"sse_{hash(key_input)}"
+            headers = connection_params.get("headers", {})            
+            # Fallback for now since SSE logic was unused
+            return f"sse_{hash(str(connection_params))}"
 
         # Fallback to a generic key
         # TODO: add option for streamable HTTP in future.
@@ -1023,39 +964,8 @@ class MCPSessionManager:
         identity (command + args for stdio, URL for SSE) rather than the context_id.
         This prevents creating a new subprocess for each unique context.
         """
-########## MOD START ##########
-        try:
-########## MOD END ##########
-            server_key = self._get_server_key(connection_params, transport_type)
-########## MOD START ##########
-        except TypeError:
-            # Convert parameters to a safe format and retry
-            try:
-                if transport_type == "stdio":
-                    if isinstance(connection_params, dict) and "args" in connection_params:
-                        args = connection_params["args"]
-                        if isinstance(args, list):
-                            # Convert list to tuple
-                            connection_params = dict(connection_params)
-                            connection_params["args"] = tuple(str(arg) for arg in args)
-                    elif hasattr(connection_params, "args"):
-                        # Handle objects like StdioServerParameters
-                        args = getattr(connection_params, "args", [])
-                        if isinstance(args, list):
-                            # Convert to dict if object attributes cannot be updated
-                            connection_params_dict = {
-                                "command": getattr(connection_params, "command", ""),
-                                "args": tuple(str(arg) for arg in args),
-                                "env": getattr(connection_params, "env", {})
-                            }
-                            connection_params = connection_params_dict
-                # Retry
-                server_key = self._get_server_key(connection_params, transport_type)
-            except Exception:
-                # Final fallback: generate hash from unique string
-                fallback_str = f"{transport_type}_{context_id}_{id(connection_params)}"
-                server_key = f"{transport_type}_{hash(fallback_str)}"
-########## MOD END ##########
+        server_key = self._get_server_key(connection_params, transport_type)
+
 
         # Ensure server entry exists
         if server_key not in self.sessions_by_server:
@@ -1405,75 +1315,32 @@ class MCPStdioClient:
         self._connection_params = server_params
 
 ########## MOD START ##########
-        # Avoid StdioServerParameters hashing issues
+        # Avoid StdioServerParameters hashing issues by using instance-level hash fallback
         try:
-            # Safely patch class method
-            if not hasattr(StdioServerParameters, '_patched_hash'):
-                original_hash = StdioServerParameters.__hash__
+            # Calculate hash directly
+            args = getattr(server_params, 'args', [])
+            env = getattr(server_params, 'env', {})
+            command = getattr(server_params, 'command', '')
 
-                def safe_hash(self):
-                    try:
-                        return original_hash(self)
-                    except TypeError as e:
-                        if "unhashable type" in str(e):
-                            # Convert list elements to strings and tuple-ize
-                            args = getattr(self, 'args', [])
-                            env = getattr(self, 'env', {})
+            if isinstance(args, list):
+                hashable_args = tuple(str(arg) for arg in args)
+            else:
+                hashable_args = str(args)
 
-                            # Convert only if args is a list
-                            if isinstance(args, list):
-                                hashable_args = tuple(str(arg) for arg in args)
-                            else:
-                                hashable_args = str(args)
+            if isinstance(env, dict):
+                hashable_env = tuple(sorted((str(k), str(v)) for k, v in env.items()))
+            else:
+                hashable_env = str(env)
 
-                            # Convert only if env is a dict
-                            if isinstance(env, dict):
-                                hashable_env = tuple(sorted((str(k), str(v)) for k, v in env.items()))
-                            else:
-                                hashable_env = str(env)
+            fallback_hash = hash((command, hashable_args, hashable_env))
+            await logger.adebug(f"Calculated fallback hash: {fallback_hash}")
 
-                            command = getattr(self, 'command', '')
-                            return hash((command, hashable_args, hashable_env))
-                        raise
-
-                # Replace class method
-                StdioServerParameters.__hash__ = safe_hash
-                StdioServerParameters._patched_hash = True
-                await logger.adebug("Successfully patched StdioServerParameters.__hash__ to handle unhashable lists")
-        except Exception as patch_e:
-            await logger.adebug(f"Failed to patch StdioServerParameters.__hash__: {patch_e}")
-
-        try:
-            hash_value = hash(server_params)
-            await logger.adebug(f"StdioServerParameters is hashable after patch: {hash_value}")
-        except Exception as hash_e:
-            await logger.adebug(f"StdioServerParameters is still NOT hashable: {hash_e}")
-            # Handle individually if patch fails
-            try:
-                # Calculate hash directly
-                args = getattr(server_params, 'args', [])
-                env = getattr(server_params, 'env', {})
-                command = getattr(server_params, 'command', '')
-
-                if isinstance(args, list):
-                    hashable_args = tuple(str(arg) for arg in args)
-                else:
-                    hashable_args = str(args)
-
-                if isinstance(env, dict):
-                    hashable_env = tuple(sorted((str(k), str(v)) for k, v in env.items()))
-                else:
-                    hashable_env = str(env)
-
-                fallback_hash = hash((command, hashable_args, hashable_env))
-                await logger.adebug(f"Calculated fallback hash: {fallback_hash}")
-
-                # Set hash directly on the object
-                server_params._hash_value = fallback_hash
-                server_params.__hash__ = lambda self: self._hash_value
-                await logger.adebug("Applied fallback hash method to server_params")
-            except Exception as fallback_e:
-                await logger.adebug(f"Failed to apply fallback hash: {fallback_e}")
+            # Set hash directly on the object
+            server_params._hash_value = fallback_hash
+            server_params.__hash__ = lambda self: self._hash_value
+            await logger.adebug("Applied fallback hash method to server_params")
+        except Exception as fallback_e:
+            await logger.adebug(f"Failed to apply fallback hash: {fallback_e}")
 ########## MOD END ##########
 
         # If no session context is set, create a default one

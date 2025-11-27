@@ -156,19 +156,6 @@ async def get_servers(
             server_info["toolsCount"] = len(tool_list)
             if len(tool_list) == 0:
                 server_info["error"] = "No tools found"
-#################### MOD START - サーバー設定取得と型エラー対応 ###################
-        except TypeError as e:
-            # 型エラーの場合（例：unhashable type: 'list'）の回避策
-            if "unhashable type: 'list'" in str(e):
-                # エラーが発生したものの、接続自体は成功している可能性がある
-                # この場合はエラーを設定せず、成功として扱う
-                server_info["mode"] = "stdio"
-                server_info["toolsCount"] = 18  # ログから見つかった値
-                server_info["error"] = None  # エラーをクリア
-                return server_info
-            else:
-                raise
-#################### MOD END - サーバー設定取得と型エラー対応 #####################
         except ValueError as e:
             # Configuration validation errors, invalid URLs, etc.
             await logger.aerror(f"Configuration error for server {server_name}: {e}")
@@ -186,26 +173,6 @@ async def get_servers(
             await logger.aerror(f"System error for server {server_name}: {e}")
             server_info["error"] = f"System error: {e}"
         except (KeyError, TypeError) as e:
-################## MOD START - unhashable type: 'list'の特殊処理 #################
-            # unhashable type: 'list'エラーの場合は特殊処理
-            if isinstance(e, TypeError) and "unhashable type: 'list'" in str(e):
-                try:
-                    # 問題を回避するためのシンプルなフォールバック処理
-                    # 接続が成功していた場合、ツール情報を設定
-                    server_info["mode"] = "stdio"  # モードは既知
-                    
-                    # 最近のログからツール数を推定（18 toolsが見つかっていた）
-                    # 実際の値を取得できないので、成功として扱う
-                    server_info["toolsCount"] = 18  # ログから見つかった値
-                    server_info["error"] = None  # エラーをクリア
-                    
-                    return server_info
-                except Exception:
-                    # フォールバックのフォールバック
-                    server_info["mode"] = "stdio"
-                    server_info["toolsCount"] = 0
-                    server_info["error"] = "List type conversion applied (fallback)"
-################## MOD END - unhashable type: 'list'の特殊処理 ##################
 
             # Data parsing and access errors
             await logger.aerror(f"Data error for server {server_name}: {e}")
@@ -273,18 +240,13 @@ async def update_server(
         else:
             raise HTTPException(status_code=500, detail="Server not found.")
     else:
-################## MOD START Update Serverでenvが消える問題 ##################
-        # 既存の設定がある場合は、それを保持しつつ新しい設定で更新
+################## MOD START ##################
         existing_config = server_list["mcpServers"].get(server_name, {})
-        
-        # 既存のenvが存在し、新しい設定にenvが含まれていない場合は保持
         if "env" in existing_config and "env" not in server_config:
             server_config["env"] = existing_config["env"]
-        
-        # その他の既存設定も必要に応じて保持（例：args）
         if "args" in existing_config and "args" not in server_config:
             server_config["args"] = existing_config["args"]
-################## MOD END Update Serverでenvが消える問題 ##################
+################## MOD END ##################
         server_list["mcpServers"][server_name] = server_config
 
     # Remove the existing file
